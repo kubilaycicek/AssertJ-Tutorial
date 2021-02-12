@@ -95,21 +95,30 @@ public class StudentTestWithAsserJAssertions {
 
     @Test
     void anotherCreateStudentTest() {
-        Student kubilay = new Student("kubilay", "çiçek", LocalDate.of(1993, 5, 13));
-        Student melike = new Student("melike", "çiçek", LocalDate.of(1998, 1, 8));
+        final Student kubilay = new Student("kubilay", "çiçek", LocalDate.of(1993, 5, 13));
+        final Student melike = new Student("melike", "çiçek", LocalDate.of(1998, 1, 8));
 
         Assertions.assertThat(kubilay).as("Check student kubilay info")
                 .isNotNull()
                 .hasSameClassAs(melike)
                 .isExactlyInstanceOf(Student.class)
                 .isNotEqualTo(melike)
-                .isEqualToComparingOnlyGivenFields(melike,"surname")
-                .isEqualToIgnoringGivenFields(kubilay,"name","birthdate")
+                .isEqualToComparingOnlyGivenFields(melike, "surname")
+                .isEqualToIgnoringGivenFields(kubilay, "name", "birthdate")
                 .matches(Objects::nonNull)
-                .matches(student->student.getSurname()=="çiçek")
+                .matches(student -> student.getSurname() == "çiçek")
                 .hasFieldOrProperty("surname")
                 .hasNoNullFieldsOrProperties()
-                .extracting(Student::getName,Student::getSurname)
-                .containsOnly("kubilay","çiçek");
+                .extracting(Student::getName, Student::getSurname)
+                .containsOnly("kubilay", "çiçek");
+
+    }
+
+    @Test
+    void customStudentAssertNameTest() {
+        Student kubilay = new Student("kubilay", "çiçek", LocalDate.of(1993, 5, 13));
+
+        StudentAssert.assertThat(kubilay).as("Student kubilay info check").hasName("kubilay");
+
     }
 }
