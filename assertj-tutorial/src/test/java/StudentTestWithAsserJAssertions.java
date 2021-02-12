@@ -1,6 +1,7 @@
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.assertj.core.groups.Tuple;
+import org.assertj.core.internal.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.filter.InFilter.in;
 
@@ -73,21 +75,41 @@ public class StudentTestWithAsserJAssertions {
 
 
         Assertions.assertThat(students)
-                .filteredOn("birthDate",in(LocalDate.of(1990, Month.SEPTEMBER, 5))).hasSize(1)
+                .filteredOn("birthDate", in(LocalDate.of(1990, Month.SEPTEMBER, 5))).hasSize(1)
                 .containsOnly(student1);
 
         Assertions.assertThat(students)
                 .extracting(Student::getName)
-                .filteredOn(name->name.contains("a"))
+                .filteredOn(name -> name.contains("a"))
                 .hasSize(2)
-                .containsOnly("Mark","Michael");
+                .containsOnly("Mark", "Michael");
 
         Assertions.assertThat(students)
                 .filteredOn(student -> student.getName().contains("a"))
-                .extracting(Student::getName,Student::getSurname)
+                .extracting(Student::getName, Student::getSurname)
                 .containsOnly(
-                        Tuple.tuple("Mark","Walker"),
-                        Tuple.tuple("Michael","Jackson")
+                        Tuple.tuple("Mark", "Walker"),
+                        Tuple.tuple("Michael", "Jackson")
                 );
+    }
+
+    @Test
+    void anotherCreateStudentTest() {
+        Student kubilay = new Student("kubilay", "çiçek", LocalDate.of(1993, 5, 13));
+        Student melike = new Student("melike", "çiçek", LocalDate.of(1998, 1, 8));
+
+        Assertions.assertThat(kubilay).as("Check student kubilay info")
+                .isNotNull()
+                .hasSameClassAs(melike)
+                .isExactlyInstanceOf(Student.class)
+                .isNotEqualTo(melike)
+                .isEqualToComparingOnlyGivenFields(melike,"surname")
+                .isEqualToIgnoringGivenFields(kubilay,"name","birthdate")
+                .matches(Objects::nonNull)
+                .matches(student->student.getSurname()=="çiçek")
+                .hasFieldOrProperty("surname")
+                .hasNoNullFieldsOrProperties()
+                .extracting(Student::getName,Student::getSurname)
+                .containsOnly("kubilay","çiçek");
     }
 }
