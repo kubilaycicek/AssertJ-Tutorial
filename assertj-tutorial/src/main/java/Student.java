@@ -1,15 +1,17 @@
+import java.time.LocalDate;
+
 public class Student {
     private String name;
     private String surname;
-    private int age;
+    private LocalDate birthDate;
 
     public Student() {
     }
 
-    public Student(String name, String surname, int age) {
+    public Student(String name, String surname, LocalDate birthDate) {
         this.name = name;
         this.surname = surname;
-        this.age = age;
+        this.birthDate = birthDate;
     }
 
     public String getName() {
@@ -28,12 +30,12 @@ public class Student {
         this.surname = surname;
     }
 
-    public int getAge() {
-        return age;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class Student {
         return "Student{" +
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", age='" + age + '\'' +
+                ", birthDate=" + birthDate +
                 '}';
     }
 }
